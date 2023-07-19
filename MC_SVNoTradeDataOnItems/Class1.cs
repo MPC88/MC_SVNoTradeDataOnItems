@@ -11,7 +11,7 @@ namespace MC_SVNoTradeDataOnItems
     {
         public const string pluginGuid = "mc.starvalor.notradedataonitems";
         public const string pluginName = "SV No Trade Data On Items";
-        public const string pluginVersion = "2.0.0";
+        public const string pluginVersion = "2.0.1";
 
         private readonly int[] idAmmo = { 20, 21, 22, 53 };        
         private readonly int idEnergyCells = 18;
@@ -93,15 +93,14 @@ namespace MC_SVNoTradeDataOnItems
                 lastReducedMode = cfgReducedMode.Value;
         }
 
-        [HarmonyPatch(typeof(CargoSystem), "StoreItem", new System.Type[] { typeof(int), typeof(int), typeof(int), typeof(int), typeof(float), typeof(int), typeof(int), typeof(int), typeof(CI_Data)})]
+        [HarmonyPatch(typeof(CargoSystem), "StoreItem", new System.Type[] { typeof(int), typeof(int), typeof(int), typeof(int), typeof(float), typeof(int), typeof(int), typeof(CI_Data)})]
         [HarmonyPrefix]
-        private static void CargoSystem_StoreItem_Pre(int itemID, ref float pricePaid, ref int sellerID)
+        private static void CargoSystem_StoreItem_Pre(int itemID, ref float pricePaid)
         {        
-            if (cfgEnabled.Value && pricePaid != 0f && sellerID != -1 && 
+            if (cfgEnabled.Value && pricePaid != 0f && 
                 (!cfgReducedMode.Value || (cfgReducedMode.Value && reducedModeActiveItems.Contains(itemID))))
             {
                     pricePaid = 0f;
-                    sellerID = -1;
             }
         }
     }
